@@ -7,6 +7,6 @@
     "apilint": "apigeelint -s ./apiproxy -f table.js -e PO025,PO013"
   },
   "devDependencies": {
-    "apigeelint": "^2.13.0",
+    "apigeelint": "^2.13.0"
   }
 }
