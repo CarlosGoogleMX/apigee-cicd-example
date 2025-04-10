@@ -59,7 +59,7 @@
     </Flow>
   </Flows>
   <HTTPProxyConnection>
-    <BasePath>/api/v1</BasePath>
+    <BasePath>/user-cicd-api/v1</BasePath>
     <Properties/>
   </HTTPProxyConnection>
   <RouteRule name="default"/>
