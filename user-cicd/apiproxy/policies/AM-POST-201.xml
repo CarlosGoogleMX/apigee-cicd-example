@@ -4,7 +4,7 @@
   <Set>
     <Payload contentType="application/json" variablePrefix="#" variableSuffix="%">
       {
-        "message": "Changed StatusCode",
+        "message": "Changed StatusCode 2",
         "build": "OK"
       }
     </Payload>
