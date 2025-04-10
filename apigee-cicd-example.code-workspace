@@ -1,0 +1,20 @@
+{
+  "folders": [
+    {
+      "path": "/home/hernandezforer/workdir/azteca"
+    },
+    {
+      "name": "user-cicd",
+      "type": "proxy",
+      "path": "/home/hernandezforer/workdir/azteca/apigee-cicd-example/user-cicd"
+    },
+    {
+      "name": "dev",
+      "type": "environment",
+      "path": "/home/hernandezforer/workdir/azteca/apigee-cicd-example/dev"
+    }
+  ],
+  "settings": {
+    "cloudcode.workspace.type": "apigee"
+  }
+}

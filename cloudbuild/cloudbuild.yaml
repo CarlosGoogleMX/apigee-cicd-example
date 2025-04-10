@@ -104,7 +104,7 @@ substitutions:
   # Host name for the integration test
   _INT_TEST_HOST: https://mocktarget.apigee.net
   _REPO: "Repo"
-  _WORK_DIR: "."
+  _WORK_DIR: "user-cicd"
 timeout: 600s
 options:
   logging: CLOUD_LOGGING_ONLY
