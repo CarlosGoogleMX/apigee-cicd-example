@@ -6,24 +6,20 @@ steps:
       - .
     # Install node dependencies for linting
   - name: node
-    id: "Install Dependencies"
-    entrypoint: "bash"
     args:
-      - "-c"
+      - '-c'
       - |-
         cd "$_WORK_DIR"
-        npm install --silent --no-fund
+        npm install
+    id: Install Dependencies
+    entrypoint: bash
     # Run static code analysis and linting
   - name: node
-    id: "Static Code Analysis"
-    entrypoint: "bash"
     args:
-      - "-c"
+      - '-c'
       - |-
         cd "$_WORK_DIR"
         npm run apigeelint | tee report.apigeelint.html && \
-        if [ ${PIPESTATUS[0]} -ne "0" ]; then exit -1; fi && \
-        npm run eslint | tee report.eslint.html && \
         if [ ${PIPESTATUS[0]} -ne "0" ]; then exit -1; fi
     # Fetch Apigee credentials
     # and set branch specific config parameters

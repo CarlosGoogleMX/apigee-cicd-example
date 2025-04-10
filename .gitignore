@@ -1,6 +1,7 @@
 node_modules/
 
 user-local/target
+static-report.html
 
 # IDE - VSCode
 .vscode/*
