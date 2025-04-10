@@ -1,0 +1,114 @@
+steps:
+  - name: gcr.io/cloud-builders/git
+    args:
+      - clone
+      - '${_REPO}'
+      - .
+    # Install node dependencies for linting
+  - name: node
+    id: "Install Dependencies"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |-
+        cd "$_WORK_DIR"
+        npm install --silent --no-fund
+    # Run static code analysis and linting
+  - name: node
+    id: "Static Code Analysis"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |-
+        cd "$_WORK_DIR"
+        npm run apigeelint | tee report.apigeelint.html && \
+        if [ ${PIPESTATUS[0]} -ne "0" ]; then exit -1; fi && \
+        npm run eslint | tee report.eslint.html && \
+        if [ ${PIPESTATUS[0]} -ne "0" ]; then exit -1; fi
+    # Fetch Apigee credentials
+    # and set branch specific config parameters
+  - name: gcr.io/cloud-builders/gcloud
+    id: "Fetch Credentials"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |-
+        cd "$_WORK_DIR"
+        # Config based on branch name
+        if [ "$BRANCH_NAME" = "apigee-cicd" ]
+        then
+          echo "export APIGEE_ENV=$_APIGEE_DEV_ENV" >> env.txt
+          echo "export APIGEE_DEPLOYMENT_SUFFIX=''" >> env.txt
+        elif [ "$BRANCH_NAME" = "prod" ]
+        then
+          echo "export APIGEE_ENV=$_APIGEE_PROD_ENV" >> env.txt
+          echo "export APIGEE_DEPLOYMENT_SUFFIX=''" >> env.txt
+        else
+          echo "export APIGEE_ENV=$_APIGEE_DEV_ENV" >> env.txt
+          echo "export APIGEE_DEPLOYMENT_SUFFIX=\"-$(echo $BRANCH_NAME | \
+          sed "s/[^A-Za-z0-9]/-/g")\"" >> env.txt
+        fi
+
+        if [ "$_API_VERSION" = "apigee" ]
+        then
+          echo "export APIGEE_BUILD_PASS=\"$(gcloud secrets versions access latest \
+            --secret=devrel_apigee_pass --format="get(payload.data)" | \
+            base64 -d)\"" >> env.txt &&
+          echo "export APIGEE_BUILD_USER=\"$(gcloud secrets versions access latest \
+            --secret=devrel_apigee_user --format="get(payload.data)" | \
+            base64 -d)\"" >> env.txt
+        else
+          echo "export APIGEE_BUILD_TOKEN=\"$(gcloud auth application-default print-access-token)\"" >> env.txt
+        fi
+
+        echo "[BUILD CONFIG]"
+        echo
+        cat env.txt | sed "s/APIGEE_BUILD_PASS=.*/APIGEE_BUILD_PASS=[hidden]/g" | \
+        sed "s/APIGEE_BUILD_TOKEN=.*/APIGEE_BUILD_TOKEN=[hidden]/g"
+
+    # Deploy using the Apigee credentials from above
+  - name: "gcr.io/cloud-builders/mvn"
+    id: "Proxy Deployment"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |-
+        cd "$_WORK_DIR"
+        if [ "$_API_VERSION" = "apigee" ]
+        then
+          source env.txt && \
+          mvn clean install -ntp \
+            -P"apigeeapi" \
+            -Denv="$${APIGEE_ENV}" \
+            -Dpassword="$${APIGEE_BUILD_PASS}" \
+            -Dusername="$${APIGEE_BUILD_USER}" \
+            -Dorg="$_DEPLOYMENT_ORG" \
+            -Ddeployment.suffix="$${APIGEE_DEPLOYMENT_SUFFIX}" \
+            -Ddeployment.description="CloudRun Build: $BUILD_ID"
+        else
+          source env.txt && \
+          mvn clean install -ntp \
+            -P"googleapi" \
+            -Denv="$${APIGEE_ENV}" \
+            -Dtoken="$${APIGEE_BUILD_TOKEN}" \
+            -Dorg="$_DEPLOYMENT_ORG" \
+            -Ddeployment.suffix="$${APIGEE_DEPLOYMENT_SUFFIX}" \
+            -Ddeployment.description="CloudRun Build: $BUILD_ID"
+        fi
+substitutions:
+  # Apigee Org for where to deploy to
+  _DEPLOYMENT_ORG: worstation-379213
+  # (Optional) Apigee Environment overrides
+  _APIGEE_DEV_ENV: dev
+  _APIGEE_PROD_ENV: prod
+  # Management API version use:
+  # 'apigee' for current Apigee Edge
+  # 'google' for Apigee X and hybrid
+  _API_VERSION: google #apigee|google
+  # Host name for the integration test
+  _INT_TEST_HOST: https://mocktarget.apigee.net
+  _REPO: "Repo"
+  _WORK_DIR: "."
+timeout: 600s
+options:
+  logging: CLOUD_LOGGING_ONLY

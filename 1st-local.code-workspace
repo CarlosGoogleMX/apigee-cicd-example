@@ -1,0 +1,17 @@
+{
+  "folders": [
+    {
+      "name": "user-local",
+      "type": "proxy",
+      "path": "/home/hernandezforer/workdir/azteca/1st-local/user-local"
+    },
+    {
+      "name": "dev",
+      "type": "environment",
+      "path": "/home/hernandezforer/workdir/azteca/1st-local/dev"
+    }
+  ],
+  "settings": {
+    "cloudcode.workspace.type": "apigee"
+  }
+}

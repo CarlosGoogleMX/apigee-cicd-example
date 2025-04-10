@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<AssignMessage continueOnError="false" enabled="true" name="AM-POST-201">
+  <DisplayName>AM-POST-201</DisplayName>
+  <Set>
+    <Payload contentType="application/json" variablePrefix="#" variableSuffix="%">
+      {
+        "message": "Changed StatusCode Build"
+      }
+    </Payload>
+    <StatusCode>201</StatusCode>
+    <ReasonPhrase>Success</ReasonPhrase>
+  </Set>
+</AssignMessage>

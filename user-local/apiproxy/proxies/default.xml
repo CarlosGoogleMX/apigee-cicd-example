@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ProxyEndpoint name="default">
+  <Description/>
+  <FaultRules/>
+  <PreFlow name="PreFlow">
+    <Request/>
+    <Response/>
+  </PreFlow>
+  <PostFlow name="PostFlow">
+    <Request/>
+    <Response/>
+  </PostFlow>
+  <Flows>
+    <Flow name="/users get">
+      <Description>List all users</Description>
+      <Request/>
+      <Response/>
+      <Condition>(proxy.pathsuffix MatchesPath "/users") and (request.verb = "GET")</Condition>
+    </Flow>
+    <Flow name="/users post">
+      <Description>Create a new user</Description>
+      <Request/>
+      <Response>
+        <Step>
+          <Name>AM-POST-201</Name>
+        </Step>
+      </Response>
+      <Condition>(proxy.pathsuffix MatchesPath "/users") and (request.verb = "POST")</Condition>
+    </Flow>
+    <Flow name="/users/{id} get">
+      <Description>Info for a specific user</Description>
+      <Request/>
+      <Response/>
+      <Condition>(proxy.pathsuffix MatchesPath "/users/{id}") and (request.verb = "GET")</Condition>
+    </Flow>
+    <Flow name="/users/{id} put">
+      <Description>Update an existent user</Description>
+      <Request/>
+      <Response/>
+      <Condition>(proxy.pathsuffix MatchesPath "/users/{id}") and (request.verb = "PUT")</Condition>
+    </Flow>
+    <Flow name="/users/{id} delete">
+      <Description>Delete a user</Description>
+      <Request/>
+      <Response/>
+      <Condition>(proxy.pathsuffix MatchesPath "/users/{id}") and (request.verb = "DELETE")</Condition>
+    </Flow>
+    <Flow name="/users/{id} patch">
+      <Description>Update an existent user</Description>
+      <Request/>
+      <Response/>
+      <Condition>(proxy.pathsuffix MatchesPath "/users/{id}") and (request.verb = "PATCH")</Condition>
+    </Flow>
+    <Flow name="/search get">
+      <Description>Search users</Description>
+      <Request/>
+      <Response/>
+      <Condition>(proxy.pathsuffix MatchesPath "/search") and (request.verb = "GET")</Condition>
+    </Flow>
+  </Flows>
+  <HTTPProxyConnection>
+    <BasePath>/api/v1</BasePath>
+    <Properties/>
+  </HTTPProxyConnection>
+  <RouteRule name="default"/>
+</ProxyEndpoint>

@@ -1,0 +1,18 @@
+{
+  "name": "cicd-v1",
+  "version": "1.0.0",
+  "description": "Sample Proxy for CI/CD Reference",
+  "scripts": {
+    "lint": "npm run eslint && npm run apigeelint",
+    "eslint": "eslint --format html .",
+    "apigeelint": "apigeelint -s ./apiproxy -f html.js -e PO025,PO013",
+    "apilint": "apigeelint -s ./apiproxy -f table.js -e PO025,PO013"
+  },
+  "devDependencies": {
+    "apickli": "^2.3.3",
+    "apigeelint": "^2.13.0",
+    "eslint": "^7.0.0",
+    "eslint-config-prettier": "^6.11.0",
+    "prettier": "^2.0.5"
+  }
+}
